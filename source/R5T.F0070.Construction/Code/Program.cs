@@ -1,13 +1,18 @@
 using System;
+using System.Threading.Tasks;
 
 
 namespace R5T.F0070.Construction
 {
     class Program
     {
-        static void Main()
+        static async Task Main()
         {
-            Console.WriteLine("Hello World!");
+            //await Instances.Operations.GetQuote();
+            //Instances.Operations.ParseQuote_FromOutputJsonFile();
+            //await Instances.Operations.GetQuote_AndSerializeToOutputJsonFile();
+            //Instances.Operations.DeserializeQuote_FromOutputJsonFile();
+            await Instances.Operations.GetQuotes();
         }
     }
 }
