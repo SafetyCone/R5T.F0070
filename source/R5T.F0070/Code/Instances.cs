@@ -1,9 +1,6 @@
 using System;
 
-using R5T.F0000;
-using R5T.F0002;
 using R5T.F0059;
-using R5T.Z0000;
 using R5T.Z0016;
 
 
@@ -16,7 +13,7 @@ namespace R5T.F0070
         public static IDataTypeNames DataTypeNames { get; } = F0070.DataTypeNames.Instance;
         public static F0000.F001.IDateOperator DateOperator { get; } = F0000.F001.DateOperator.Instance;
         public static IDescriptionOperator DescriptionOperator { get; } = F0070.DescriptionOperator.Instance;
-        public static IFileOperator FileOperator { get; } = F0000.FileOperator.Instance;
+        public static F0000.IFileOperator FileOperator { get; } = F0000.FileOperator.Instance;
         public static IFilePaths FilePaths { get; } = F0070.FilePaths.Instance;
         public static F0000.IFileSystemOperator FileSystemOperator { get; } = F0000.FileSystemOperator.Instance;
         public static IFunctionNames FunctionNames { get; } = F0070.FunctionNames.Instance;
@@ -30,7 +27,7 @@ namespace R5T.F0070
         public static IRawPropertyNames RawPropertyNames { get; } = F0070.RawPropertyNames.Instance;
         public static IRelativeUrls RelativeUrls { get; } = F0070.RelativeUrls.Instance;
         public static IResultKeyNames ResultKeyNames { get; } = F0070.ResultKeyNames.Instance;
-        public static IStrings Strings { get; } = Z0000.Strings.Instance;
+        public static Z0000.IStrings Strings { get; } = Z0000.Strings.Instance;
         public static ITickers Tickers { get; } = F0070.Tickers.Instance;
         public static ITickersOperator TickersOperator { get; } = F0070.TickersOperator.Instance;
         public static IUrlOperator UrlOperator { get; } = F0070.UrlOperator.Instance;
