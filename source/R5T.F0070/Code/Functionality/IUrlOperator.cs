@@ -27,7 +27,7 @@ namespace R5T.F0070
             string ticker,
             string apiKey)
         {
-            var queryValues = HttpUtility.ParseQueryString(Z0000.Strings.Instance.QuestionMark);
+            var queryValues = HttpUtility.ParseQueryString(Instances.Strings.QuestionMark);
 
             queryValues["function"] = Instances.FunctionNames.Global_Quote;
             queryValues["symbol"] = ticker;
@@ -45,7 +45,7 @@ namespace R5T.F0070
         {
             var queryUrl = this.GetQueryUrl();
 
-            var queryValues = HttpUtility.ParseQueryString(Z0000.Strings.Instance.Empty);
+            var queryValues = HttpUtility.ParseQueryString(Instances.Strings.Empty);
 
             queryValues["function"] = Instances.FunctionNames.Global_Quote;
             queryValues["symbol"] = ticker;

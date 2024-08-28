@@ -10,7 +10,7 @@ namespace R5T.F0070
 {
 	[FunctionalityMarker]
 	public partial interface IJsonOperator : IFunctionalityMarker,
-		F0032.IJsonOperator
+		L0072.IJsonOperator
 	{
 		public void SerializeGlobalQuote_Synchronous(
 			string jsonFilePath,
@@ -18,7 +18,7 @@ namespace R5T.F0070
 		{
 			this.SerializeGlobalQuotes_Synchronous(
 				jsonFilePath,
-				F0000.EnumerableOperator.Instance.From(globalQuote));
+				Instances.EnumerableOperator.From(globalQuote));
 		}
 
 		public Task SerializeGlobalQuote(
@@ -27,7 +27,7 @@ namespace R5T.F0070
 		{
 			return this.SerializeGlobalQuotes(
 				jsonFilePath,
-				F0000.EnumerableOperator.Instance.From(globalQuote));
+				Instances.EnumerableOperator.From(globalQuote));
 		}
 
 		public GlobalQuote DeserializeGlobalQuote_Synchronous(
@@ -57,7 +57,7 @@ namespace R5T.F0070
 			var serializationGlobalQuotes = globalQuotes
 				.Select(x => x.ToSerialization());
 
-			Instances.JsonOperator.Serialize_Synchronous(
+			Instances.JsonOperator.Save_ToFile_Synchronous(
 				jsonFilePath,
 				serializationGlobalQuotes);
 		}
@@ -71,7 +71,7 @@ namespace R5T.F0070
 				// Need to evaluate now since enumerables will not be enumerated by the serializer.
 				.Now();
 
-			return Instances.JsonOperator.Serialize(
+			return Instances.JsonOperator.Save_ToFile(
 				jsonFilePath,
 				serializationGlobalQuotes);
 		}
@@ -79,7 +79,7 @@ namespace R5T.F0070
 		public async Task<GlobalQuote[]> DeserializeGlobalQuotes(
 			string jsonFilePath)
 		{
-			var serializationGlobalQuotes = await Instances.JsonOperator.Deserialize<Serialization.GlobalQuote[]>(
+			var serializationGlobalQuotes = await Instances.JsonOperator.Load_FromFile<Serialization.GlobalQuote[]>(
 				jsonFilePath);
 
 			var globalQuote = serializationGlobalQuotes
@@ -92,7 +92,7 @@ namespace R5T.F0070
 		public GlobalQuote[] DeserializeGlobalQuotes_Synchronous(
 			string jsonFilePath)
 		{
-			var serializationGlobalQuotes = Instances.JsonOperator.Deserialize_Synchronous<Serialization.GlobalQuote[]>(
+			var serializationGlobalQuotes = Instances.JsonOperator.Load_FromFile_Synchronous<Serialization.GlobalQuote[]>(
 				jsonFilePath);
 
 			var globalQuote = serializationGlobalQuotes

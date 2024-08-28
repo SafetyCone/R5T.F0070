@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 
-using Newtonsoft.Json.Linq;
-
-using R5T.F0000;
+using R5T.L0089.T000;
 using R5T.T0132;
 
 
@@ -17,9 +16,33 @@ namespace R5T.F0070
 	[FunctionalityMarker]
 	public partial interface IAlphaVantageOperator : IFunctionalityMarker
 	{
+		/// <summary>
+		/// AlphaVantage dates are in <see cref="L0066.IDateTimeFormats.YYYY_MM_DD_Dashed"/> (<inheritdoc cref="L0066.IDateTimeFormats.YYYY_MM_DD_Dashed" path="descendant::description"/>) format.
+		/// </summary>
+		public DateOnly Get_Date_FromAlphaVantageDateString(string dateString)
+			=> Instances.DateOperator.From_YYYY_MM_DD_Dashed(dateString);
+
+		public string To_String_ForDate(DateOnly date)
+			=> Instances.DateOperator.ToString_YYYY_MM_DD_Dash(date);
+
+		public string To_String_ForVolume(ulong volume)
+			=> volume.ToString();
+
+		/// <summary>
+		/// The standard for prices in AlphaVantage JSON results is four (4) decimal paces (X.XXXX).
+		/// </summary>
+		public string To_String_ForPrices(Decimal value)
+		{
+			var output = Instances.StringOperator.Format_WithFormatString(
+				Instances.FormatStrings.FourDecimalPlaces,
+				value);
+
+			return output;
+		}
+
 		public async Task<string> GetApiKey()
         {
-			var apiKey = await Instances.FileOperator.ReadText(
+			var apiKey = await Instances.FileOperator.Read_Text(
 				Instances.FilePaths.ApiKeyTextFilePath);
 
 			return apiKey;
@@ -27,7 +50,7 @@ namespace R5T.F0070
 
 		public string GetApiKey_Synchronous()
 		{
-			var apiKey = Instances.FileOperator.ReadText_Synchronous(
+			var apiKey = Instances.FileOperator.Read_Text_Synchronous(
 				Instances.FilePaths.ApiKeyTextFilePath);
 
 			return apiKey;
@@ -45,39 +68,39 @@ namespace R5T.F0070
 			return queryHttpClient;
         }
 
-		public bool ResponseHasGlobalQuoteAndIsNonEmpty(JObject response)
+		public bool ResponseHasGlobalQuoteAndIsNonEmpty(JsonObject response)
         {
-			var globalQuote = response.Property(Instances.ResultKeyNames.GlobalQuote);
+			var globalQuote = response[Instances.ResultKeyNames.GlobalQuote].AsObject();
 
 			// Global quote is not null and has some children.
-			var output = globalQuote?.Value.Children().Any() ?? false;
+			var output = globalQuote?.Any() ?? false;
 			return output;
         }
 
-		public bool ResponseHasGlobalQuote(JObject response)
+		public bool ResponseHasGlobalQuote(JsonObject response)
 		{
-			var globalQuote = response.Property(Instances.ResultKeyNames.GlobalQuote);
+			var globalQuote = response[Instances.ResultKeyNames.GlobalQuote];
 
 			// Global quote is not null;
 			var output = globalQuote is not null;
 			return output;
 		}
 
-		public bool ResponseHasNote(JObject response)
+		public bool ResponseHasNote(JsonObject response)
 		{
-			var note = response.Property(Instances.ResultKeyNames.Note);
+			var note = response[Instances.ResultKeyNames.Note];
 
 			// Note is not null;
 			var output = note is not null;
 			return output;
 		}
 
-		public bool ResponseIsMaximumRequestsPerMinuteReached(JObject response)
+		public bool ResponseIsMaximumRequestsPerMinuteReached(JsonObject response)
         {
-			var note = response.Property(Instances.ResultKeyNames.Note);
+			var note = response[Instances.ResultKeyNames.Note];
 
 			// Note is not null and has the text of the mamimum request per minute note text.
-			var noteValue = note?.Value.ToString() ?? System.String.Empty;
+			var noteValue = note?.AsValue().GetValue<string>() ?? System.String.Empty;
 
 			var output = noteValue == Instances.NoteTexts.MaximumRequestsPerMinuteReached;
 			return output;
@@ -119,7 +142,7 @@ namespace R5T.F0070
 
 			var quoteRawJsonText = hasQuote.Result;
 
-			var responseJObject = JObject.Parse(quoteRawJsonText);
+			var responseJObject = JsonObject.Parse(quoteRawJsonText).AsObject();
 
 			var responseHasGlobalQuote = this.ResponseHasGlobalQuote(responseJObject);
 			if(responseHasGlobalQuote)
@@ -157,9 +180,9 @@ namespace R5T.F0070
 			var responseHasNote = this.ResponseHasNote(responseJObject);
 			if(responseHasNote)
             {
-				var note = responseJObject.Property(Instances.ResultKeyNames.Note);
+				var note = responseJObject[Instances.ResultKeyNames.Note];
 
-				logger.LogWarning($"Response has note:\n\t{note.Value}");
+				logger.LogWarning($"Response has note:\n\t{note.GetValue<string>()}");
 
 				// No return, continue on to error.
             }
@@ -180,7 +203,7 @@ namespace R5T.F0070
 				alphaVantageQueryHttpClient,
 				logger);
 
-			var responseJObject = JObject.Parse(quoteRawJsonText);
+			var responseJObject = JsonObject.Parse(quoteRawJsonText).AsObject();
 
 			var responseHasGlobalQuoteAndIsNonEmpty = this.ResponseHasGlobalQuoteAndIsNonEmpty(responseJObject);
 			if (responseHasGlobalQuoteAndIsNonEmpty)
@@ -258,7 +281,7 @@ namespace R5T.F0070
 			string cacheJsonFilePath,
 			ILogger logger)
         {
-			var cacheFileExists = Instances.FileSystemOperator.FileExists(cacheJsonFilePath);
+			var cacheFileExists = Instances.FileSystemOperator.Exists_File(cacheJsonFilePath);
 			if(cacheFileExists)
             {
 				var cachedGlobalQuote = await Instances.JsonOperator.DeserializeGlobalQuote(cacheJsonFilePath);
@@ -267,9 +290,9 @@ namespace R5T.F0070
             }
 
 			// If the quote was previously not found.
-			var quoteNotFoundCacheFilePath = Instances.PathOperator.AppendToFileNameStem(cacheJsonFilePath, "-Not Found");
+			var quoteNotFoundCacheFilePath = Instances.PathOperator.Append_ToFileNameStem(cacheJsonFilePath, "-Not Found");
 
-			var quoteNotFoundCacheFileExists = Instances.FileSystemOperator.FileExists(quoteNotFoundCacheFilePath);
+			var quoteNotFoundCacheFileExists = Instances.FileSystemOperator.Exists_File(quoteNotFoundCacheFilePath);
 			if(quoteNotFoundCacheFileExists)
             {
 				return WasFound.NotFound<GlobalQuote>();
@@ -285,7 +308,7 @@ namespace R5T.F0070
 			// Then save the quote, if it was found.
 			if (hasQuote)
 			{
-				Instances.FileSystemOperator.EnsureDirectoryForFilePathExists(cacheJsonFilePath);
+				Instances.FileSystemOperator.Ensure_DirectoryExists_ForFilePath(cacheJsonFilePath);
 
 				await Instances.JsonOperator.SerializeGlobalQuote(
 					cacheJsonFilePath,
@@ -293,10 +316,10 @@ namespace R5T.F0070
 			}
             else
             {
-				await Instances.FileOperator.WriteLines(
+				await Instances.FileOperator.Write_Lines(
 					quoteNotFoundCacheFilePath,
 					// Use ellipsis just for fun.
-					EnumerableOperator.Instance.From(Z0000.Strings.Instance.Ellipsis));
+					Instances.EnumerableOperator.From(Instances.Strings.Ellipsis));
             }
 
 			return hasQuote;

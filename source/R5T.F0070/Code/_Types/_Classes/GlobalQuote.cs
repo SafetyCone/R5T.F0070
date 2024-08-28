@@ -1,6 +1,5 @@
 ﻿using System;
-
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 using R5T.T0142;
 
@@ -14,25 +13,25 @@ namespace R5T.F0070.Raw
     [DataTypeMarker]
     public class GlobalQuote
     {
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.Symbol)]
+        [JsonPropertyName(name: IRawPropertyNames.IForGlobalQuote.Symbol)]
         public string Symbol { get; set; }
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.Open)]
+        [JsonPropertyName(name:IRawPropertyNames.IForGlobalQuote.Open)]
         public string Open { get; set; }
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.High)]
+        [JsonPropertyName(name:IRawPropertyNames.IForGlobalQuote.High)]
         public string High { get; set; }
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.Low)]
+        [JsonPropertyName(name:IRawPropertyNames.IForGlobalQuote.Low)]
         public string Low { get; set; }
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.Price)]
+        [JsonPropertyName(name:IRawPropertyNames.IForGlobalQuote.Price)]
         public string Price { get; set; }
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.Volume)]
+        [JsonPropertyName(name:IRawPropertyNames.IForGlobalQuote.Volume)]
         public string Volume { get; set; }
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.LatestTradingDay)]
+        [JsonPropertyName(name:IRawPropertyNames.IForGlobalQuote.LatestTradingDay)]
         public string LatestTradingDay { get; set; }
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.PreviousClose)]
+        [JsonPropertyName(name:IRawPropertyNames.IForGlobalQuote.PreviousClose)]
         public string PreviousClose { get; set; }
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.Change)]
+        [JsonPropertyName(name:IRawPropertyNames.IForGlobalQuote.Change)]
         public string Change { get; set; }
-        [JsonProperty(PropertyName = IRawPropertyNames.IForGlobalQuote.ChangePercent)]
+        [JsonPropertyName(name:IRawPropertyNames.IForGlobalQuote.ChangePercent)]
         public string ChangePercent { get; set; }
 
 
@@ -72,7 +71,7 @@ namespace R5T.F0070.Serialization
 
         public override string ToString()
         {
-            var priceString = Instances.ConversionOperator.ToString(this.Price);
+            var priceString = Instances.ConversionOperator.To_String(this.Price);
 
             var representation = Instances.DescriptionOperator.DescribeQuote(
                 this.Symbol,

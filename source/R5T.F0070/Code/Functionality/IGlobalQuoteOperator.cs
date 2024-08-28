@@ -10,7 +10,7 @@ namespace R5T.F0070
 	{
 		public GlobalQuote FromRawJsonText(string rawJsonText)
         {
-			var rawGlobalQuote = Instances.JsonOperator.ParseFromJsonText<Raw.GlobalQuote>(
+			var rawGlobalQuote = Instances.JsonOperator.Parse_FromJsonText<Raw.GlobalQuote>(
 				rawJsonText,
 				Instances.ResultKeyNames.GlobalQuote);
 
@@ -23,14 +23,14 @@ namespace R5T.F0070
 			var globalQuote = new GlobalQuote
 			{
 				Symbol = rawGlobalQuote.Symbol,
-				Open = Instances.ConversionOperator.ToDouble(rawGlobalQuote.Open),
-				High = Instances.ConversionOperator.ToDouble(rawGlobalQuote.High),
-				Low = Instances.ConversionOperator.ToDouble(rawGlobalQuote.Low),
-				Price = Instances.ConversionOperator.ToDouble(rawGlobalQuote.Price),
-				Volume = Instances.ConversionOperator.ToLong(rawGlobalQuote.Volume),
+				Open = Instances.ConversionOperator.To_Double(rawGlobalQuote.Open),
+				High = Instances.ConversionOperator.To_Double(rawGlobalQuote.High),
+				Low = Instances.ConversionOperator.To_Double(rawGlobalQuote.Low),
+				Price = Instances.ConversionOperator.To_Double(rawGlobalQuote.Price),
+				Volume = Instances.ConversionOperator.To_Long(rawGlobalQuote.Volume),
 				LatestTradingDay = Instances.ConversionOperator.ToDate(rawGlobalQuote.LatestTradingDay),
-				PreviousClose = Instances.ConversionOperator.ToDouble(rawGlobalQuote.PreviousClose),
-				Change = Instances.ConversionOperator.ToDouble(rawGlobalQuote.Change),
+				PreviousClose = Instances.ConversionOperator.To_Double(rawGlobalQuote.PreviousClose),
+				Change = Instances.ConversionOperator.To_Double(rawGlobalQuote.Change),
 				ChangePercent = Instances.ConversionOperator.ToDouble_FromChangePercent(rawGlobalQuote.ChangePercent),
 			};
 

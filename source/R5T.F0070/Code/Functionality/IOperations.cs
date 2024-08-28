@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 
-using Newtonsoft.Json.Linq;
-
-using R5T.F0000;
+using R5T.L0089.T000;
 using R5T.T0132;
 
 
@@ -22,7 +22,7 @@ namespace R5T.F0070
         {
             var quoteJsonText = await this.GetQuote_AsRawJsonText(ticker);
 
-            var rawGlobalQuote = Instances.JsonOperator.ParseFromJsonText<Raw.GlobalQuote>(
+            var rawGlobalQuote = Instances.JsonOperator.Parse_FromJsonText<Raw.GlobalQuote>(
                 quoteJsonText,
                 Instances.ResultKeyNames.GlobalQuote);
 
@@ -42,17 +42,18 @@ namespace R5T.F0070
 
         public async Task<string> GetQuote_AsRawJsonText(
             string ticker,
+            string apiKey,
             ILogger logger)
         {
             var baseUri = new Uri("https://www.alphavantage.co");
             var queryUri = new Uri(baseUri, "query");
 
-            var query = HttpUtility.ParseQueryString(Z0000.Strings.Instance.Empty);
+            var query = HttpUtility.ParseQueryString(Instances.Strings.Empty);
 
             query["function"] = "GLOBAL_QUOTE";
             query["symbol"] = ticker;
             query["datatype"] = "json"; // Be explicit, even though this is the default.
-            query["apikey"] = "TTUN4FLET2JZ5JBC";
+            query["apikey"] = apiKey;
 
             var uriBuilder = new UriBuilder(queryUri)
             {
@@ -72,6 +73,7 @@ namespace R5T.F0070
 
         public async Task<Dictionary<string, GlobalQuote>> GetQuotes(
             IEnumerable<string> tickers,
+            string apiKey,
             ILogger logger)
         {
             var output = new Dictionary<string, GlobalQuote>();
@@ -95,19 +97,20 @@ namespace R5T.F0070
                 {
                     var quoteRawJsonText = await this.GetQuote_AsRawJsonText(
                         ticker,
+                        apiKey,
                         logger);
 
                     logger.LogInformation($"Quote raw JSON:\n{quoteRawJsonText}");
 
-                    var responseJObject = JObject.Parse(quoteRawJsonText);
+                    var responseJObject = JsonObject.Parse(quoteRawJsonText);
 
-                    var globalQuote = responseJObject.Property(Instances.ResultKeyNames.GlobalQuote);
+                    var globalQuote = responseJObject[Instances.ResultKeyNames.GlobalQuote].AsObject();
                     if(globalQuote is null)
                     {
-                        var note = responseJObject.Property("Note");
+                        var note = responseJObject["Note"];
                         if(note is not null)
                         {
-                            logger.LogInformation(note.Value.ToString());
+                            logger.LogInformation(note.ToString());
                             logger.LogInformation("Maximum requests per minute reached.");
 
                             var now = DateTime.Now;
@@ -130,8 +133,8 @@ namespace R5T.F0070
                     }
                     else
                     {
-                        var globalQuoteValue = globalQuote.Value;
-                        if (globalQuoteValue.Children().Any())
+                        var globalQuoteValue = globalQuote;
+                        if (globalQuoteValue.Any())
                         {
                             logger.LogDebug($"Succesfully retrieved quote for ticker '{ticker}'.");
 
