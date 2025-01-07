@@ -66,7 +66,7 @@ namespace R5T.F0070
 				Low = globalQuote.Low,
 				Price = globalQuote.Price,
 				Volume = globalQuote.Volume,
-				LatestTradingDay = Instances.DateOperator.ToString_YYYY_MM_DD_Dash(globalQuote.LatestTradingDay),
+				LatestTradingDay = Instances.DateOperator.ToString_YYYY_MM_DD_Dashed(globalQuote.LatestTradingDay),
 				PreviousClose = globalQuote.PreviousClose,
 				Change = globalQuote.Change,
 				ChangePercent = globalQuote.ChangePercent,

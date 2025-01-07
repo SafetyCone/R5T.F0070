@@ -23,7 +23,7 @@ namespace R5T.F0070
 			=> Instances.DateOperator.From_YYYY_MM_DD_Dashed(dateString);
 
 		public string To_String_ForDate(DateOnly date)
-			=> Instances.DateOperator.ToString_YYYY_MM_DD_Dash(date);
+			=> Instances.DateOperator.ToString_YYYY_MM_DD_Dashed(date);
 
 		public string To_String_ForVolume(ulong volume)
 			=> volume.ToString();

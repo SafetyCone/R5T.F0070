@@ -22,7 +22,7 @@ namespace R5T.F0070
 			double priceInUSD,
 			DateOnly date)
 		{
-			var dateString = Instances.DateOperator.ToString_YYYY_MM_DD_Dash(date);
+			var dateString = Instances.DateOperator.ToString_YYYY_MM_DD_Dashed(date);
 
 			var output = $"{ticker}: ${priceInUSD} ({dateString})";
 			return output;
