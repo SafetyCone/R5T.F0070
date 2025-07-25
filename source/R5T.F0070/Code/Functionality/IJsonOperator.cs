@@ -69,7 +69,7 @@ namespace R5T.F0070
 			var serializationGlobalQuotes = globalQuotes
 				.Select(x => x.ToSerialization())
 				// Need to evaluate now since enumerables will not be enumerated by the serializer.
-				.Now();
+				.ToArray();
 
 			return Instances.JsonOperator.Save_ToFile(
 				jsonFilePath,
@@ -84,7 +84,7 @@ namespace R5T.F0070
 
 			var globalQuote = serializationGlobalQuotes
 				.Select(x => x.ToGlobalQuote())
-				.Now();
+				.ToArray();
 
 			return globalQuote;
 		}
@@ -97,7 +97,7 @@ namespace R5T.F0070
 
 			var globalQuote = serializationGlobalQuotes
 				.Select(x => x.ToGlobalQuote())
-				.Now();
+				.ToArray();
 
 			return globalQuote;
 		}

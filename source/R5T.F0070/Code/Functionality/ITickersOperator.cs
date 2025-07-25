@@ -36,7 +36,7 @@ namespace R5T.F0070
 			var output = tickers
 				.Distinct()
 				.OrderAlphabetically()
-				.Now();
+				.ToArray();
 
 			return output;
         }

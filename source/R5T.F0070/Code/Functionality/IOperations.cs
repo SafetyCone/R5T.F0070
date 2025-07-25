@@ -81,7 +81,7 @@ namespace R5T.F0070
             var distinctTickers = tickers
                 .Distinct()
                 .OrderAlphabetically_OnlyIfDebug()
-                .Now();
+                .ToArray();
 
             foreach (var ticker in distinctTickers)
             {

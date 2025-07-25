@@ -1,13 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <NoWarn>CS1573;CS1587;CS1591;IDE0130</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <Version>1.0.0</Version>
     <Authors>DCoats</Authors>
     <Company>Rivet</Company>
     <Copyright>Copyright (c) Rivet 2022</Copyright>
-    <Description>--- ADD DESCRIPTION ---</Description>
+    <Description>Alphavantage API functionality library.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <RepositoryUrl>https://github.com/SafetyCone/R5T.F0070.git</RepositoryUrl>
